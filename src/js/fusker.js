@@ -114,7 +114,7 @@ function safeHTML(data) {
 }
 
 function getProxy(url) {
-  proxyUrl = "http://104.236.195.107/proxy.php";
+  proxyUrl = "https://104.236.195.107/proxy.php";
   return $.get(proxyUrl, {url: url, secret: 'sgadfiuzasdfgiuasfgsdaukfksagfhjhsd'});
 }
 
