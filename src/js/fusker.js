@@ -119,6 +119,7 @@ function getProxy(url) {
 }
 
 function loadEvilangel(url) {
+  console.log("loadEvilangel", url);
   return getProxy(url).done(function(data) {
     data = $(data);
     var src = data.find(".pgDisplayLink img").prop("src");
@@ -168,22 +169,34 @@ function loadEvilangel(url) {
 // http://www.gapingangels.com/en/Fuck-My-Ass-06/showphotos/27285
 // ???
 
+// http://www.myxxxpass.com/en/scene/myxxxpass/This-Is-How-I-Get-What-I-Want/1/122315
+// http://www.myxxxpass.com/en/photo/myxxxpass/This-Is-How-I-Get-What-I-Want/6530
+// http://www.myxxxpass.com/en/photogallery/This-Is-How-I-Get-What-I-Want/6530
+
+// http://www.evilangel.com/en/picture/Hookup-Hotshot-Extreme-Dating/27303
+
+// http://www.hardx.com/en/picture/hardx/Good-Girl-Gone-Bad--Glam/5661
+
 function auto() {
+  console.log("test");
   var url = $("#url").val();
-  // http://www.hardx.com/en/picture/hardx/Good-Girl-Gone-Bad--Glam/5661
+  var galleryUrl;
   if(url.match(/\/picture\/hardx\//)) {
-    url = url.replace("/picture/hardx/", "/photogallery/").replace("de", "en");
-    loadEvilangel(url);
+    galleryUrl = url.replace("/picture/hardx/", "/photogallery/").replace("de", "en");
   } else if(url.match(/evilangel\.com/) && url.match(/\/picture\//)) {
-   // http://www.evilangel.com/en/picture/Hookup-Hotshot-Extreme-Dating/27303
-     url = url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/");
-     loadEvilangel(url);
+    galleryUrl = url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/");
   } else if(url.match(/darkx\.com/) && url.match(/\/photo\//)) {
-   url = url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/");
-   loadEvilangel(url);
+    galleryUrl = url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/");
   } else if(url.match(/throated\.com/) && url.match(/\/photo\//)) {
-   url = url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/");
-   loadEvilangel(url);
+    galleryUrl = url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/");
+  } else if(url.match(/myxxxpass\.com/) && url.match(/\/photo\/myxxxpass\//)) {
+    galleryUrl = url.replace("/photo/myxxxpass/", "/photogallery/");
+  }
+
+  console.log(galleryUrl);
+
+  if(galleryUrl) {
+    loadEvilangel(galleryUrl);
   }
 }
 
