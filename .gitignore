@@ -1,2 +1,20 @@
+# See http://help.github.com/ignore-files/ for more about ignoring files.
+
+# dependencies
+/react-fusker/node_modules
+
+# testing
+/react-fusker/coverage
+
+# production
+/react-fusker/build
+
+# misc
+/react-fusker/.DS_Store
+/react-fusker/.env
+/react-fusker/npm-debug.log*
+/react-fusker/yarn-debug.log*
+/react-fusker/yarn-error.log*
+
 .old_git/
 fix_commiter.sh

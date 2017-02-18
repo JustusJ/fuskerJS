@@ -31,8 +31,11 @@ function createRanges(string) {
   var firstRange;
   var currentRange;
 
-  var rangesRegex = /\[(@([a-z]+):)?(\d+)-(\d+)\]/g;
-  // "[@set:1-2]", "@set:", "set", "1", "2"
+  // "[@set:50-200]" => "set", "50", "200"
+  // [1] (optional): name of the range
+  // [2] (required): beginning of range
+  // [3] (required): end of range
+  var rangesRegex = /\[(?:@([a-z]+):)?(\d+)-(\d+)\]/g;
 
   // keeps track of already used range names. if a range name is encountered twice,
   // only the first one will be created, the second will be ignored and later be filled
@@ -41,13 +44,13 @@ function createRanges(string) {
 
   // keeps track of the order ranges are used in
   var ranges = [];
-  var r;
-  while(r = rangesRegex.exec(string)) {
-    var name = r[2] || "_range_" + count;
+  var match;
+  while(match = rangesRegex.exec(string)) {
+    var name = match[1] || "_range_" + count;
     ranges.push(name);
     if(!rangeNames[name]) {
       rangeNames[name] = true;
-      var newRange = new Range(name, r[3], r[4]);
+      var newRange = new Range(name, match[2], match[3]);
       if(!firstRange) {
         currentRange = firstRange = newRange;
       } else {
@@ -212,7 +215,7 @@ function fusk() {
 
     var container = $("#image-container");
     var width = parseInt($("#width").val(), 10);
-    var resizeUrl = "http://104.236.195.107/resize.php?width=" + width + "&url=";
+    var resizeUrl = "http://roflzomfg.de/resize.php?width=" + width + "&url=";
     var googleUrl = "https://www.google.com/searchbyimage?hl=en&safe=off&site=search&image_url=";
     container.empty();
 
