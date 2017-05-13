@@ -88,7 +88,12 @@ const sites = [
     name: 'myxxxpass',
     matchers: [(/myxxxpass\.com/), (/\/photo\/\w+\//)],
     transform: (url) => url.replace(/\/photo\/\w+\//, "/photogallery/")
-  }
+  },
+  {
+    name: 'mikeadriano',
+    matchers: [(/mikeadriano\.com/), (/\/picture\//)],
+    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
+  },
 ]
 
 function check(url) {
