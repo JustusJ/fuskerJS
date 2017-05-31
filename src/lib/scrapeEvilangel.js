@@ -21,6 +21,18 @@ function loadEvilangel(url) {
   });
 }
 
+function cherrypop(url) {
+  return getProxy(url).then(function(data) {
+    data = $($.parseHTML(data, document, false));
+    var src = data.find(".imgLink.pgUnlocked:first").prop("href");
+    var countText = data.find(".photosetNbPics .nbPicsValue").text();
+    var count = ((parseInt(countText, 10)) || 0);
+    if(count > 0 && src) {
+      var fuskerUrl = src.replace("001.jpg", "[001-" + count + "].jpg");
+      return fuskerUrl;
+    }
+  });
+}
 // analacrobats.com
 // no pictures
 
@@ -59,9 +71,8 @@ function loadEvilangel(url) {
 // http://www.myxxxpass.com/en/photo/myxxxpass/This-Is-How-I-Get-What-I-Want/6530
 // http://www.myxxxpass.com/en/photogallery/This-Is-How-I-Get-What-I-Want/6530
 
-// http://www.evilangel.com/en/picture/Hookup-Hotshot-Extreme-Dating/27303
-
-// http://www.hardx.com/en/picture/hardx/Good-Girl-Gone-Bad--Glam/5661
+// http://www.cherrypop.com/en/photo/What-a-Big-Surprise/48997
+// http://www.cherrypop.com/en/photogallery/What-a-Big-Surprise/48997
 
 const sites = [
   {
@@ -94,6 +105,11 @@ const sites = [
     matchers: [(/mikeadriano\.com/), (/\/picture\//)],
     transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
   },
+  {
+    name: 'cherrypop',
+    matchers: [(/cherrypop\.com/), (/\/photo\//)],
+    parser: cherrypop
+  },
 ]
 
 function check(url) {
@@ -103,7 +119,11 @@ function check(url) {
 }
 
 function scrape(site, url) {
-  return loadEvilangel(site.transform(url));
+  if(site.parser) {
+    return site.parser(url);
+  } else {
+    return loadEvilangel(site.transform(url));
+  }
 }
 
 export default {check, scrape};
