@@ -7,7 +7,7 @@ class Worker {
 	}
 
 	work(item) {
-		let image = new Image();
+		const image = new Image();
 		image.onload = this.doneCallback.bind(this, this, item);
 		image.onerror = this.errorCallback.bind(this, this, item);
 		image.src = item.thumbUrl;

@@ -33,10 +33,14 @@ class App extends Component {
     queue.run(20);
   }
 
+  imageUrlList() {
+    return this.state.queue ? this.state.queue.images.map(image => image.url) : [];
+  }
+
   renderImages() {
     return this.state.queue.images.map(function(image) {
       return (<a href={image.url} key={image.url}><img src={image.thumbUrl} alt='x' /></a>);
-    })
+    });
   }
 
   setWidth(event) {
@@ -78,7 +82,7 @@ class App extends Component {
             </div>
           </div>
 
-          <div className="col-sm-10">
+          <div className="col-sm-7">
             <div className="input-group">
               <input type="text"
                 className="form-control"
@@ -92,6 +96,11 @@ class App extends Component {
               </div>
             </div>
           </div>
+
+          <div className="col-sm-3">
+            <textarea className="form-control" rows="1" value={this.imageUrlList().join("\n")} />
+          </div>
+
         </div>
         
         {this.state.queue ? 
