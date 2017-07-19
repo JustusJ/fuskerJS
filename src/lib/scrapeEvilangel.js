@@ -74,34 +74,36 @@ function cherrypop(url) {
 // http://www.cherrypop.com/en/photo/What-a-Big-Surprise/48997
 // http://www.cherrypop.com/en/photogallery/What-a-Big-Surprise/48997
 
+// http://www.bskow.com/en/picture/Color-Blind/46249
+
 const sites = [
   {
-    name: 'hardx',
+    name: 'hardx.com',
     matchers: [(/\/picture\/hardx\//)],
     transform: (url) => url.replace("/picture/hardx/", "/photogallery/").replace("de", "en")
   },
   {
-    name: 'evilangel',
+    name: 'evilangel.com',
     matchers: [(/evilangel\.com/), (/\/picture\//)],
     transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
   },
   {
-    name: 'darkx',
+    name: 'darkx.com',
     matchers: [(/darkx\.com/), (/\/photo\//)],
     transform: (url) => url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/")
   },
   {
-    name: 'throated',
+    name: 'throated.com',
     matchers: [(/throated\.com/), (/\/photo\//)],
     transform: (url) => url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/")
   },
   {
-    name: 'myxxxpass',
+    name: 'myxxxpass.com',
     matchers: [(/myxxxpass\.com/), (/\/photo\/\w+\//)],
     transform: (url) => url.replace(/\/photo\/\w+\//, "/photogallery/")
   },
   {
-    name: 'mikeadriano',
+    name: 'mikeadriano.com',
     matchers: [(/mikeadriano\.com/), (/\/picture\//)],
     transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
   },
@@ -109,6 +111,12 @@ const sites = [
     name: 'cherrypop',
     matchers: [(/cherrypop\.com/), (/\/photo\//)],
     parser: cherrypop
+  },
+
+  {
+    name: 'bskow.com',
+    matchers: [(/bskow\.com/), (/\/picture\//)],
+    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
   },
 ]
 
