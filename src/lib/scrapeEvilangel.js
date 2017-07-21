@@ -88,6 +88,11 @@ const sites = [
     transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
   },
   {
+    name: 'mikeadriano.com',
+    matchers: [(/mikeadriano\.com/), (/\/picture\//)],
+    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
+  },
+  {
     name: 'darkx.com',
     matchers: [(/darkx\.com/), (/\/photo\//)],
     transform: (url) => url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/")
@@ -103,16 +108,25 @@ const sites = [
     transform: (url) => url.replace(/\/photo\/\w+\//, "/photogallery/")
   },
   {
-    name: 'mikeadriano.com',
-    matchers: [(/mikeadriano\.com/), (/\/picture\//)],
-    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
-  },
-  {
-    name: 'cherrypop',
+    name: 'cherrypop.com',
     matchers: [(/cherrypop\.com/), (/\/photo\//)],
     parser: cherrypop
   },
-
+  {
+    name: 'sweetheartvideo.com',
+    matchers: [(/sweetheartvideo\.com/), (/\/photo\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'sweetsinner.com',
+    matchers: [(/sweetsinner\.com/), (/\/picture\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'realityjunkies.com',
+    matchers: [(/realityjunkies\.com/), (/\/picture\//)],
+    parser: cherrypop
+  },
   {
     name: 'bskow.com',
     matchers: [(/bskow\.com/), (/\/picture\//)],
@@ -127,11 +141,11 @@ function check(url) {
 }
 
 function scrape(site, url) {
-  if(site.parser) {
-    return site.parser(url);
-  } else {
-    return loadEvilangel(site.transform(url));
+  if(site.transform) {
+    url = site.transform(url)
   }
+  const parser = site.parser || loadEvilangel;
+  return parser(url)
 }
 
 export default {check, scrape};
