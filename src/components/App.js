@@ -14,8 +14,9 @@ class App extends Component {
 
   constructor() {
     super();
-    this.state = {url: '', queueSettings: {width: 200 ,test: 1}};
+    this.state = {url: '', queueSettings: {width: 200 ,test: 1}, isAutoScraper: false};
     this.fusk = this.fusk.bind(this);
+    this.cancel = this.cancel.bind(this);
     this.setWidth = this.setWidth.bind(this);
   }
 
@@ -27,18 +28,21 @@ class App extends Component {
     });
 
     let queue = new Queue(urls, (queueState) => {
-      let newQueueState = update(this.state.queue || {}, {'$merge': queueState});
-      this.setState({queue: newQueueState});
+      this.setState({queue: queue, queueState: queueState});
     });
     queue.run(20);
   }
 
+  cancel() {
+    this.state.queue.stop()
+  }
+
   imageUrlList() {
-    return this.state.queue ? this.state.queue.images.map(image => image.url) : [];
+    return this.state.queueState ? this.state.queueState.images.map(image => image.url) : [];
   }
 
   renderImages() {
-    return this.state.queue.images.map(function(image) {
+    return this.state.queueState.images.map(function(image) {
       return (<a href={image.url} key={image.url}><img src={image.thumbUrl} alt='x' /></a>);
     });
   }
@@ -56,13 +60,18 @@ class App extends Component {
   }
 
   onUrlChange(event) {
-    this.setState({url: event.target.value});
     let site = evilangel.check(event.target.value);
     if(site) {
       evilangel.scrape(site, event.target.value).then((url) => {
         if(url) {this.setState({url: url})}
       });
     }
+    console.log(site, !!site)
+    this.setState({url: event.target.value, isAutoScraper: site ? site.name : null});
+  }
+
+  isRunning() {
+    return this.state.queue && this.state.queue.running && this.state.queue.runningWorkerCount > 0;
   }
 
   render() {
@@ -70,7 +79,7 @@ class App extends Component {
       <div className="container-fluid">
         <div className="row spacer-lg">
           <div className="col-sm-12">
-            <QueueState queue={this.state.queue} />
+            <QueueState queue={this.state.queueState} />
           </div>
         </div>
 
@@ -91,8 +100,12 @@ class App extends Component {
                 onChange={(e) => this.onUrlChange(e)}
                 onKeyPress={this.onKeyPress('Enter', this.fusk)} />
               
+              {this.state.isAutoScraper ? <span className="input-group-addon">{this.state.isAutoScraper}</span> : null}
               <div className="input-group-btn">
-                <input type="button" className="btn btn-primary" onClick={this.fusk} value="Fusk" />
+                {this.isRunning()
+                 ? <input type="button" className="btn btn-danger" onClick={this.cancel} value="Cancel" />
+                 : <input type="button" className="btn btn-primary" onClick={this.fusk} value="Fusk" />
+                }
               </div>
             </div>
           </div>
@@ -103,7 +116,7 @@ class App extends Component {
 
         </div>
         
-        {this.state.queue ? 
+        {this.state.queueState ? 
         <div className="row spacer-lg">
           <div className="col-sm-12">
             {this.renderImages()}

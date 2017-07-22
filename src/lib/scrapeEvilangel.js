@@ -9,6 +9,7 @@ function getProxy(url) {
 }
 
 function loadEvilangel(url) {
+  url.replace(/\/picture\/|\/photo\//, "/photogallery/")
   return getProxy(url).then(function(data) {
     data = $($.parseHTML(data, document, false));
     var src = data.find(".pgDisplayLink img").prop("src");
@@ -36,71 +37,101 @@ function cherrypop(url) {
 // analacrobats.com
 // no pictures
 
-// http://www.evilangel.com/en/video/Hookup-Hotshot---Little-Size-Queens-Scene-03/115982
 // http://www.evilangel.com/en/picture/Hookup-Hotshot---Little-Size-Queens/44344
 // http://www.evilangel.com/en/photogallery/Hookup-Hotshot---Little-Size-Queens/44344
 
-// http://www.hardx.com/en/picture/hardx/Anally-Yours-Glam/5826
-// http://www.hardx.com/en/photogallery/Anally-Yours-Glam/5826
-// Scenes are not tied to picture galleries
-
-// http://www.mikeadriano.com/en/pictures (not linked on site)
 // http://www.mikeadriano.com/en/picture/Full-Anal-Service-02/44265
 // http://www.mikeadriano.com/en/photogallery/Full-Anal-Service-02/44265
 
-// http://www.mommyblowsbest.com/en/scene/115195/relevance/1/Sneaking-In (does not link to pictures)
-// http://www.mommyblowsbest.com/en/photo/Sneaking-In/5799
-// http://www.mommyblowsbest.com/en/photogallery/Sneaking-In/5799
-
-// http://www.throated.com/en/scene/Learning-The-Ropes-Scene-01/116028 (does not link to pictures)
-// http://www.throated.com/en/photo/Learning-The-Ropes/5878
-// http://www.throated.com/en/photogallery/Learning-The-Ropes/5878
+// http://www.lexingtonsteele.com/en/picture/Interracial-Fiends/47266
+// http://www.lexingtonsteele.com/en/photogallery/Interracial-Fiends/47266
 
 // http://www.manuelferrara.com/en/photo/CUMSHOTS-Misha-Cross-Wide-Open/5696
 // http://www.manuelferrara.com/en/photogallery/CUMSHOTS-Misha-Cross-Wide-Open/5696
 
-// http://www.milkenema.com/en/Kate-England-And-Jodi/scene/79803
-// http://www.milkenema.com/en/Kate-England-And-Jodi/showphotos/26573
-// ???
+// http://www.throated.com/en/photo/Learning-The-Ropes/5878
+// http://www.throated.com/en/photogallery/Learning-The-Ropes/5878
 
-// http://www.gapingangels.com/en/Fuck-My-Ass-06/scene/81192
-// http://www.gapingangels.com/en/Fuck-My-Ass-06/showphotos/27285
-// ???
+// http://www.mommyblowsbest.com/en/photo/Sneaking-In/5799
+// http://www.mommyblowsbest.com/en/photogallery/Sneaking-In/5799
 
-// http://www.myxxxpass.com/en/scene/myxxxpass/This-Is-How-I-Get-What-I-Want/1/122315
 // http://www.myxxxpass.com/en/photo/myxxxpass/This-Is-How-I-Get-What-I-Want/6530
 // http://www.myxxxpass.com/en/photogallery/This-Is-How-I-Get-What-I-Want/6530
 
-// http://www.cherrypop.com/en/photo/What-a-Big-Surprise/48997
-// http://www.cherrypop.com/en/photogallery/What-a-Big-Surprise/48997
+// http://www.cherrypop.com/en/photo/Young-Hitchhikers-02/48727
 
-// http://www.bskow.com/en/picture/Color-Blind/46249
+// http://www.sweetheartvideo.com/en/photo/Lesbian-Babysitters-14/49616
+
+// http://www.sweetsinner.com/en/picture/Best-of-Both-Worlds/49217
+
+// http://www.realityjunkies.com/en/picture/Give-Me-an-A-/49467
+
+// http://www.roccosiffredi.com/en/picture/Teens-VS-MILFS-06/49602
+
+// http://www.devilsfilm.com/en/picture/Fucking-The-Neighbors/49695
+
+// http://www.hardx.com/en/photo/Anally-Yours-Glam/5826
+
+// https://www.darkx.com/en/photo/Sweet-Company-Part-1/6859
+
+// https://www.lesbianx.com/en/photo/Battle-Of-Super-Squirters/6810
+
+// http://www.eroticax.com/en/photo/Make-Me-Feel-Special/6848
+
+// http://www.bskow.com/en/picture/Just-The-Two-of-Us/48068
+
+
+// === images not found ===
+// http://www.milkenema.com/en/Kate-England-And-Jodi/showphotos/26573
+
+// http://www.gapingangels.com/en/Fuck-My-Ass-06/showphotos/27285
+
+// http://www.jonnidarkkoxxx.com/en/The-Return-of-Anal-Slut-Lana-Croft/showphotos/49696
+
+// http://www.lesbianolderyounger.com/en/Cougars-Loving-Kittens-03/showphotos/45146
+
+// https://www.whiteghetto.com/en/Bi-Cuckold-Gang-Bang-12/showphotos/49606
+
+// https://www.doghousedigital.com/en/The-Replacement-/photoset/49540
+
+// http://www.milehighmedia.com/en/3-Some-Fuck-Fest-05/photoset/49563
+
+// https://www.silverstonedvd.com/en/CELEBRITY-BABES/photoset/21486
+
+// http://www.peternorth.com/en/The-Special-Gift/photoset/48963
+
+// https://www.myteenoasis.com/en/The-Number-10/showphotos/3113
 
 const sites = [
   {
-    name: 'hardx.com',
-    matchers: [(/\/picture\/hardx\//)],
-    transform: (url) => url.replace("/picture/hardx/", "/photogallery/").replace("de", "en")
-  },
-  {
     name: 'evilangel.com',
     matchers: [(/evilangel\.com/), (/\/picture\//)],
-    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
+    transform: (url) => url.replace(/\/picture\//, "/photogallery/")
   },
   {
     name: 'mikeadriano.com',
     matchers: [(/mikeadriano\.com/), (/\/picture\//)],
-    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
+    transform: (url) => url.replace(/\/picture\//, "/photogallery/")
   },
   {
-    name: 'darkx.com',
-    matchers: [(/darkx\.com/), (/\/photo\//)],
-    transform: (url) => url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/")
+    name: 'lexingtonsteele.com',
+    matchers: [(/lexingtonsteele\.com/), (/\/picture\//)],
+    transform: (url) => url.replace(/\/picture\//, "/photogallery/")
+  },
+  {
+    name: 'manuelferrara.com',
+    matchers: [(/manuelferrara\.com/), (/\/photo\//)],
+    transform: (url) => url.replace(/\/photo\//, "/photogallery/")
   },
   {
     name: 'throated.com',
     matchers: [(/throated\.com/), (/\/photo\//)],
-    transform: (url) => url.replace(/\/[a-z]{2}\/photo\//, "/en/photogallery/")
+    transform: (url) => url.replace(/\/photo\//, "/photogallery/")
+  },
+  {
+    name: 'mommyblowsbest.com',
+    matchers: [(/mommyblowsbest\.com/), (/\/photo\//)],
+    transform: (url) => url.replace(/\/photo\//, "/photogallery/")
   },
   {
     name: 'myxxxpass.com',
@@ -128,9 +159,39 @@ const sites = [
     parser: cherrypop
   },
   {
+    name: 'roccosiffredi.com',
+    matchers: [(/roccosiffredi\.com/), (/\/picture\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'devilsfilm.com',
+    matchers: [(/devilsfilm\.com/), (/\/picture\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'hardx.com',
+    matchers: [(/hardx\.com/), (/\/photo\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'darkx.com',
+    matchers: [(/darkx\.com/), (/\/photo\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'lesbianx.com',
+    matchers: [(/lesbianx\.com/), (/\/photo\//)],
+    parser: cherrypop
+  },
+  {
+    name: 'eroticax.com',
+    matchers: [(/eroticax\.com/), (/\/photo\//)],
+    parser: cherrypop
+  },
+  {
     name: 'bskow.com',
     matchers: [(/bskow\.com/), (/\/picture\//)],
-    transform: (url) => url.replace(/\/[a-z]{2}\/picture\//, "/en/photogallery/")
+    transform: (url) => url.replace(/\/picture\//, "/photogallery/")
   },
 ]
 
