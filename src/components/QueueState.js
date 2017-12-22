@@ -15,7 +15,7 @@ class QueueState extends Component {
     return (
       <div>
         <h1>
-          fuskerJS
+          fuskerJS&nbsp;
           <small>{this.props.queue.doneCount} / {this.props.queue.errorCount} / {this.props.queue.urlsCount} / Workers: {this.props.queue.runningWorkerCount}</small>
         </h1>
         <div className="progress">

@@ -5,6 +5,8 @@ import Queue from '../lib/Queue.js';
 import fusker from '../lib/Fusker.js';
 import {toResizeUrl} from '../lib/urlTransformation.js';
 import evilangel from '../lib/scrapeEvilangel.js';
+import {throttle} from '../lib/throttle.js';
+
 import QueueState from './QueueState.js';
 
 import 'bootstrap/dist/css/bootstrap.css'
@@ -14,10 +16,11 @@ class App extends Component {
 
   constructor() {
     super();
-    this.state = {url: '', queueSettings: {width: 200 ,test: 1}, isAutoScraper: false};
+    this.state = {url: '', queueSettings: {width: 200 ,test: 1}, scraper: false, scraperRunning: false};
     this.fusk = this.fusk.bind(this);
     this.cancel = this.cancel.bind(this);
     this.setWidth = this.setWidth.bind(this);
+    this.checkAutoScraper = throttle(this.checkAutoScraper, this, 100)
   }
 
   fusk() {
@@ -48,8 +51,8 @@ class App extends Component {
   }
 
   setWidth(event) {
-    let value = parseInt(event.target.value, 10) || 200;
-    let newQueueSettings = update(this.state.queueSettings, {width: {'$set': value}});
+    const value = parseInt(event.target.value, 10) || 200;
+    const newQueueSettings = update(this.state.queueSettings, {width: {'$set': value}});
     this.setState({queueSettings: newQueueSettings});
   }
 
@@ -59,15 +62,23 @@ class App extends Component {
     };
   }
 
-  onUrlChange(event) {
-    let site = evilangel.check(event.target.value);
-    if(site) {
-      evilangel.scrape(site, event.target.value).then((url) => {
-        if(url) {this.setState({url: url})}
+  checkAutoScraper(url) {
+    console.log("checkAutoScraper");
+    const scraper = evilangel.check(url);
+    if(scraper) {
+      this.setState({scraper: scraper, scraperRunning: true})
+      evilangel.scrape(scraper, url).then((url) => {
+        if(url) {this.setState({url: url, scraperRunning: false})}
       });
+    } else {
+      this.setState({scraper: null})
     }
-    console.log(site, !!site)
-    this.setState({url: event.target.value, isAutoScraper: site ? site.name : null});
+  }
+
+  onUrlChange(event) {
+    const url = event.target.value;
+    this.checkAutoScraper(url);
+    this.setState({url: url});
   }
 
   isRunning() {
@@ -100,7 +111,13 @@ class App extends Component {
                 onChange={(e) => this.onUrlChange(e)}
                 onKeyPress={this.onKeyPress('Enter', this.fusk)} />
               
-              {this.state.isAutoScraper ? <span className="input-group-addon">{this.state.isAutoScraper}</span> : null}
+              {this.state.scraper
+                ? <span className="input-group-addon">
+                  {this.state.scraperRunning ? "!" : null}
+                  {this.state.scraper.name}
+                  </span>
+                : null
+              }
               <div className="input-group-btn">
                 {this.isRunning()
                  ? <input type="button" className="btn btn-danger" onClick={this.cancel} value="Cancel" />
