@@ -87,8 +87,12 @@ class App extends Component {
   }
 
   onUrlChange(event) {
-    var match;
     const url = event.target.value;
+    this.setURL(url);
+  }
+
+  setURL(url) {
+    var match;
     const scraperFound = this.checkAutoScraper(url);
     if(!scraperFound) {
       const re = /\d+/g;
@@ -115,7 +119,9 @@ class App extends Component {
 
     const samples = rand.concat(evilangels);
 
-    return samples.map((sample) => <div>{sample}</div>)
+    return samples.map((sample) => {
+      return <a key={sample} onClick={e => this.setURL(sample)}><div>{sample}</div></a>
+    })
   }
 
   render() {
