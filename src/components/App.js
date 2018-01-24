@@ -11,6 +11,7 @@ import QueueState from './QueueState.js';
 
 import 'bootstrap/dist/css/bootstrap.css'
 import '../css/bootstrap-addons.css'
+import '../css/custom.css'
 
 Array.prototype.flatMap = function(lambda) {
     return Array.prototype.concat.apply([], this.map(lambda));
@@ -120,7 +121,7 @@ class App extends Component {
     const samples = rand.concat(evilangels);
 
     return samples.map((sample) => {
-      return <a key={sample} onClick={e => this.setURL(sample)}><div>{sample}</div></a>
+      return <div><a key={sample} className="Samples-link" onClick={e => this.setURL(sample)}>{sample}</a></div>
     })
   }
 
@@ -134,38 +135,42 @@ class App extends Component {
         </div>
 
         <div className="row spacer-lg">
-          <div className="col-sm-2">
-            <div className="input-group">
-              <div className="input-group-addon">width</div>
-              <input className="form-control" type="number" value={this.state.queueSettings.width} onChange={this.setWidth} />
-            </div>
-          </div>
+          <div className="col-sm-9">
+            <div className="row">
+              <div className="col-sm-2">
+                <div className="input-group">
+                  <div className="input-group-addon">width</div>
+                  <input className="form-control" type="number" value={this.state.queueSettings.width} onChange={this.setWidth} />
+                </div>
+              </div>
 
-          <div className="col-sm-7">
-            <div className="input-group">
-              <input type="text"
-                className="form-control"
-                id="url"
-                value={this.state.url}
-                ref={(input) => this.input = input }
-                onChange={(e) => this.onUrlChange(e)}
-                onKeyPress={this.onKeyPress('Enter', this.fusk)} />
-              
-              {this.state.scraper
-                ? <span className="input-group-addon">
-                  {this.state.scraperRunning ? "!" : null}
-                  {this.state.scraper.name}
-                  </span>
-                : null
-              }
-              <div className="input-group-btn">
-                {this.isRunning()
-                 ? <input type="button" className="btn btn-danger" onClick={this.cancel} value="Cancel" />
-                 : <input type="button" className="btn btn-primary" onClick={this.fusk} value="Fusk" />
-                }
+              <div className="col-sm-10">
+                <div className="input-group">
+                  <input type="text"
+                    className="form-control"
+                    id="url"
+                    value={this.state.url}
+                    ref={(input) => this.input = input }
+                    onChange={(e) => this.onUrlChange(e)}
+                    onKeyPress={this.onKeyPress('Enter', this.fusk)} />
+
+                  {this.state.scraper
+                    ? <span className="input-group-addon">
+                      {this.state.scraperRunning ? "!" : null}
+                      {this.state.scraper.name}
+                      </span>
+                    : null
+                  }
+                  <div className="input-group-btn">
+                    {this.isRunning()
+                     ? <input type="button" className="btn btn-danger" onClick={this.cancel} value="Cancel" />
+                     : <input type="button" className="btn btn-primary" onClick={this.fusk} value="Fusk" />
+                    }
+                  </div>
+                </div>
+                <div className="help-block">{this.state.scrapeError}</div>
               </div>
             </div>
-            <div className="help-block">{this.state.scrapeError}</div>
           </div>
 
           <div className="col-sm-3">
@@ -183,7 +188,7 @@ class App extends Component {
         :
           null
         }
-        <div>
+        <div className="Samples">
         {this.renderSamples()}
         </div>
       </div>
