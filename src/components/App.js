@@ -12,6 +12,10 @@ import QueueState from './QueueState.js';
 import 'bootstrap/dist/css/bootstrap.css'
 import '../css/bootstrap-addons.css'
 
+Array.prototype.flatMap = function(lambda) {
+    return Array.prototype.concat.apply([], this.map(lambda));
+};
+
 class App extends Component {
 
   constructor() {
@@ -21,6 +25,7 @@ class App extends Component {
     this.cancel = this.cancel.bind(this);
     this.setWidth = this.setWidth.bind(this);
     this.checkAutoScraper = throttle(this.checkAutoScraper, this, 100)
+    this.renderSamples = this.renderSamples.bind(this);
   }
 
   fusk() {
@@ -63,26 +68,54 @@ class App extends Component {
   }
 
   checkAutoScraper(url) {
-    console.log("checkAutoScraper");
+    const setRunning = (url) => {
+      if(url) {this.setState({url: url, scraperRunning: false})}
+    }
+
     const scraper = evilangel.check(url);
     if(scraper) {
-      this.setState({scraper: scraper, scraperRunning: true})
-      evilangel.scrape(scraper, url).then((url) => {
-        if(url) {this.setState({url: url, scraperRunning: false})}
+      this.setState({scraper: scraper, scraperRunning: true});
+      var request = evilangel.scrape(scraper, url).then(setRunning);
+      request.fail((request, status, message) => {
+        this.setState({scrapeError: message, scraperRunning: false});
       });
     } else {
       this.setState({scraper: null})
     }
+
+    return !!scraper;
   }
 
   onUrlChange(event) {
+    var match;
     const url = event.target.value;
-    this.checkAutoScraper(url);
-    this.setState({url: url});
+    const scraperFound = this.checkAutoScraper(url);
+    if(!scraperFound) {
+      const re = /\d+/g;
+      const matches = [];
+      while((match = re.exec(url))) {
+        matches.push(match);
+      }
+    }
+    this.setState({url: url, scrapeError: null});
   }
 
   isRunning() {
     return this.state.queue && this.state.queue.running && this.state.queue.runningWorkerCount > 0;
+  }
+
+  renderSamples() {
+    const rand = [
+      //"http://cuteteennude.com/sites/default/files/photos/bp_[001-099]_47.jpg",
+      //"http://gallys.18eighteen.com/images_content/LaraBrooks_28387/1.jpg",
+      //"http://www.porn-star.com/dolly_little/1.jpg"
+    ];
+
+    const evilangels = evilangel.sites.flatMap((s) => s.samples)
+
+    const samples = rand.concat(evilangels);
+
+    return samples.map((sample) => <div>{sample}</div>)
   }
 
   render() {
@@ -106,6 +139,7 @@ class App extends Component {
             <div className="input-group">
               <input type="text"
                 className="form-control"
+                id="url"
                 value={this.state.url}
                 ref={(input) => this.input = input }
                 onChange={(e) => this.onUrlChange(e)}
@@ -125,6 +159,7 @@ class App extends Component {
                 }
               </div>
             </div>
+            <div className="help-block">{this.state.scrapeError}</div>
           </div>
 
           <div className="col-sm-3">
@@ -142,6 +177,9 @@ class App extends Component {
         :
           null
         }
+        <div>
+        {this.renderSamples()}
+        </div>
       </div>
     );
   }

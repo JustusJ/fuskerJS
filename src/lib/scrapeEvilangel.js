@@ -11,88 +11,36 @@ function parseHTML(str) {
 
 function getProxy(url) {
   let proxyUrl = "https://roflzomfg.de/proxy.php";
-  return $.get(proxyUrl, {url: url, secret: 'sgadfiuzasdfgiuasfgsdaukfksagfhjhsd'});
+  return $.get(proxyUrl, {url: url, secret: 'sgadfiuzasdfgiuasfgsdaukfksagfhjhsd'}).then(parseHTML);
 }
 
+function urlToFusker(url, count) {
+  if(count > 0 && url) {
+    return url.replace("001.jpg", "[001-" + count + "].jpg");
+  }
+}
+
+const EVILANGEL_URL_REGEX = /\/picture\/|\/photo\//
 function loadEvilangel(url) {
-  url = url.replace(/\/picture\/|\/photo\//, "/photogallery/")
+  if(url.match(EVILANGEL_URL_REGEX)) {
+    url = url.replace(EVILANGEL_URL_REGEX, "/photogallery/");
+  }
   return getProxy(url).then(function(data) {
-    data = parseHTML(data);
     var src = data.find(".pgDisplayLink img").prop("src");
     var mCount = data.find(".pgFooter .pgTitleText").text().match(/of (\d+)/);
     var count = ((mCount && parseInt(mCount[1], 10)) || 0);
-    if(count > 0 && src) {
-      var fuskerUrl = src.replace("001.jpg", "[001-" + count + "].jpg");
-      return fuskerUrl;
-    }
+    return urlToFusker(src, count);
   });
 }
 
-function cherrypop(url) {
+function loadCherrypop(url) {
   return getProxy(url).then(function(data) {
-    data = parseHTML(data);
     var src = data.find(".imgLink.pgUnlocked:first").prop("href");
     var countText = data.find(".photosetNbPics .nbPicsValue").text();
     var count = ((parseInt(countText, 10)) || 0);
-    if(count > 0 && src) {
-      var fuskerUrl = src.replace("001.jpg", "[001-" + count + "].jpg");
-      return fuskerUrl;
-    }
+    return urlToFusker(src, count);
   });
 }
-
-
-// http://www.evilangel.com/en/picture/Hookup-Hotshot---Little-Size-Queens/44344
-
-// http://www.mikeadriano.com/en/picture/Full-Anal-Service-02/44265
-
-// http://www.lexingtonsteele.com/en/picture/Interracial-Fiends/47266
-
-// http://www.analacrobats.com/en/picture/Anna-And-Gabriella/48230
-
-// http://www.prettydirty.com/en/picture/Glamour---Lyra-Law--Lana-Adams-/49130
-
-// https://www.manuelferrara.com/en/photo/CUMSHOTS-Misha-Cross-Wide-Open/5696
-
-// http://www.throated.com/en/photo/Learning-The-Ropes/5878
-
-// http://www.mommyblowsbest.com/en/photo/Sneaking-In/5799
-
-// https://www.milkingtable.com/en/picture/The-Politician/26981
-
-// http://www.nurumassage.com/en/picture/Gel-Manicure-Mixup/49417
-
-// http://massage-parlor.com/en/picture/Polish-Massage/19749
-
-// http://www.soapymassage.com/en/picture/An-Undercover-Cop/8433
-
-// http://www.trickyspa.com/en/picture/Follow-Me-Daddy/27077
-
-// http://www.myxxxpass.com/en/photo/myxxxpass/This-Is-How-I-Get-What-I-Want/6530
-
-// http://www.cherrypop.com/en/photo/Young-Hitchhikers-02/48727
-
-// http://www.sweetheartvideo.com/en/photo/Lesbian-Babysitters-14/49616
-
-// http://www.sweetsinner.com/en/picture/Best-of-Both-Worlds/49217
-
-// http://www.realityjunkies.com/en/picture/Give-Me-an-A-/49467
-
-// http://www.roccosiffredi.com/en/picture/Teens-VS-MILFS-06/49602
-
-// http://www.devilsfilm.com/en/picture/Fucking-The-Neighbors/49695
-
-// http://www.hardx.com/en/photo/Anally-Yours-Glam/5826
-
-// https://www.darkx.com/en/photo/Sweet-Company-Part-1/6859
-
-// https://www.lesbianx.com/en/photo/Battle-Of-Super-Squirters/6810
-
-// http://www.eroticax.com/en/photo/Make-Me-Feel-Special/6848
-
-// http://www.bskow.com/en/picture/Just-The-Two-of-Us/48068
-
-
 
 // === images not found ===
 // http://www.milkenema.com/en/Kate-England-And-Jodi/showphotos/26573
@@ -147,7 +95,7 @@ function buildSite(parser, hostname) {
   return {
     name: hostname,
     hostname: hostname,
-    matchers: [(/\/(picture|photo)\//)],
+    matchers: [(/\/(picture|photo|photogallery)\//)],
     parser: parser
   }
 }
@@ -157,44 +105,58 @@ function buildEvilangel(hostname) {
 }
 
 function buildCherrypop(hostname) {
-  return buildSite(cherrypop, hostname)
+  return buildSite(loadCherrypop, hostname)
 }
 
-const sites = [
-  buildEvilangel("evilangel.com"),
-  buildEvilangel("mikeadriano.com"),
-  buildEvilangel("lexingtonsteele.com"),
-  buildEvilangel("analacrobats.com"),
-  buildEvilangel("prettydirty.com"),
-  buildEvilangel("bskow.com"),
-  buildEvilangel("allgirlmassage.com"),
-  buildEvilangel("manuelferrara.com"),
-  buildEvilangel("throated.com"),
-  buildEvilangel("mommyblowsbest.com"),
-  buildEvilangel("milkingtable.com"),
-  buildEvilangel("nurumassage.com"),
-  buildEvilangel("massage-parlor.com"),
-  buildEvilangel("soapymassage.com"),
-  buildEvilangel("trickyspa.com"),
-  {
-    name: 'myxxxpass.com',
-    hostname: 'myxxxpass.com',
-    matchers: [(/\/photo\/\w+\//)],
-    parser: loadEvilangel,
-    transform: (url) => url.replace(/\/photo\/\w+\//, "/photogallery/")
-  },
-  buildCherrypop("cherrypop.com"),
-  buildCherrypop("sweetheartvideo.com"),
-  buildCherrypop("sweetsinner.com"),
-  buildCherrypop("realityjunkies.com"),
-  buildCherrypop("roccosiffredi.com"),
-  buildCherrypop("devilsfilm.com"),
-  buildCherrypop("hardx.com"),
-  buildCherrypop("darkx.com"),
-  buildCherrypop("lesbianx.com"),
-  buildCherrypop("eroticax.com"),
-  buildCherrypop("burningangel.com")
-]
+const sites = [];
+
+function addSite(site, samples) {
+  const r = {site, samples}
+  sites.push(r);
+}
+
+
+
+addSite(buildEvilangel("evilangel.com"), ["https://www.evilangel.com/en/picture/Hookup-Hotshot---Little-Size-Queens/44344"])
+addSite(buildEvilangel("mikeadriano.com"), ["https://www.mikeadriano.com/en/picture/Full-Anal-Service-02/44265"])
+addSite(buildEvilangel("lexingtonsteele.com"), ["https://www.lexingtonsteele.com/en/picture/Interracial-Fiends/47266"])
+addSite(buildEvilangel("analacrobats.com"), ["https://www.analacrobats.com/en/picture/Anna-And-Gabriella/48230"])
+addSite(buildEvilangel("prettydirty.com"), ["https://www.prettydirty.com/en/picture/Glamour---Lyra-Law--Lana-Adams-/49130"])
+addSite(buildEvilangel("bskow.com"), ["https://www.bskow.com/en/picture/Just-The-Two-of-Us/48068"])
+addSite(buildEvilangel("throated.com"), ["https://www.throated.com/en/photo/Learning-The-Ropes/5878"])
+addSite(buildEvilangel("mommyblowsbest.com"), ["https://www.mommyblowsbest.com/en/photo/Sneaking-In/5799"])
+addSite(buildEvilangel("milkingtable.com"), ["https://www.milkingtable.com/en/picture/The-Politician/26981"])
+addSite(buildEvilangel("nurumassage.com"), ["https://www.nurumassage.com/en/picture/Gel-Manicure-Mixup/49417"])
+addSite(buildEvilangel("massage-parlor.com"), ["https://www.massage-parlor.com/en/picture/Polish-Massage/19749"])
+addSite(buildEvilangel("soapymassage.com"), ["https://www.soapymassage.com/en/picture/An-Undercover-Cop/8433"])
+addSite(buildEvilangel("trickyspa.com"), ["https://www.trickyspa.com/en/picture/Follow-Me-Daddy/27077"])
+addSite(buildEvilangel("squirtingorgies.com"), ["https://www.squirtingorgies.com/en/photogallery/Mattie-Borders/3847"])
+addSite(buildEvilangel("cocksuckingchallenge.com"), ["https://www.cocksuckingchallenge.com/en/photogallery/Lexi-Swallow-Super-Bowl-Special-Cocksucking-Challenge/1858"])
+addSite(buildEvilangel("onlyteenblowjobs.com"), ["https://www.onlyteenblowjobs.com/en/photo/The-It-Factor/7063"])
+addSite(buildCherrypop("cherrypop.com"), ["https://www.cherrypop.com/en/photo/Young-Hitchhikers-02/48727"])
+addSite(buildCherrypop("sweetheartvideo.com"), ["https://www.sweetheartvideo.com/en/photo/Lesbian-Babysitters-14/49616"])
+addSite(buildCherrypop("sweetsinner.com"), ["https://www.sweetsinner.com/en/picture/Best-of-Both-Worlds/49217"])
+addSite(buildCherrypop("realityjunkies.com"), ["https://www.realityjunkies.com/en/picture/Give-Me-an-A-/49467"])
+addSite(buildCherrypop("roccosiffredi.com"), ["https://www.roccosiffredi.com/en/picture/Teens-VS-MILFS-06/49602"])
+addSite(buildCherrypop("devilsfilm.com"), ["https://www.devilsfilm.com/en/picture/Fucking-The-Neighbors/49695"])
+addSite(buildCherrypop("xempire.com"), ["https://www.xempire.com/en/photo/xempire/Chloe-Loves-Anal/7084"])
+addSite(buildCherrypop("hardx.com"), ["https://www.hardx.com/en/photo/Anally-Yours-Glam/5826"])
+addSite(buildCherrypop("darkx.com"), ["https://www.darkx.com/en/photo/Sweet-Company-Part-1/6859"])
+addSite(buildCherrypop("lesbianx.com"), ["https://www.lesbianx.com/en/photo/Battle-Of-Super-Squirters/6810"])
+addSite(buildCherrypop("eroticax.com"), ["https://www.eroticax.com/en/photo/Make-Me-Feel-Special/6848"])
+addSite(buildCherrypop("burningangel.com"), ["https://www.burningangel.com/en/photo/Yhivi-Anal-Teenage-Fuckdoll/44335"])
+addSite(buildCherrypop("allgirlmassage.com"), ["https://www.allgirlmassage.com/en/photo/My-Dirty-Friend/17826"])
+
+const myxxxpass = {
+  name: 'myxxxpass.com',
+  hostname: 'myxxxpass.com',
+  matchers: [(/\/photo\/\w+\//)],
+  parser: loadEvilangel,
+  transform: (url) => url.replace(/\/photo\/\w+\//, "/photogallery/")
+}
+addSite(myxxxpass, ["https://www.myxxxpass.com/en/photo/myxxxpass/This-Is-How-I-Get-What-I-Want/6530"]);
+
+
 
 const HOSTNAME_REGEX = /https?:\/\/([^\/]+)/
 
@@ -207,9 +169,10 @@ function matchHost(hostname, url) {
 }
 
 function check(url) {
-  return sites.find((site) => {
-    return matchHost(site.hostname, url) && site.matchers.every((matcher) => url.match(matcher) );
-  })
+  const found = sites.find((site) => {
+    return matchHost(site.site.hostname, url) && site.site.matchers.every((matcher) => url.match(matcher) );
+  });
+  return found && found.site;
 }
 
 function scrape(site, url) {
@@ -220,4 +183,4 @@ function scrape(site, url) {
   return parser(url)
 }
 
-export default {check, scrape};
+export default {check, scrape, sites};
